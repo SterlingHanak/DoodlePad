@@ -1,0 +1,134 @@
+ <!DOCTYPE html>
+ <html lang="eng">
+ <head>
+ 	<meta charset="UTF-8">
+ 	<title>HTML5 Canvas</title>
+ </head>
+
+ <body>
+ <button type="button" id="eraser">Eraser</button>
+ <button type="button" id="redInk">Red Ink</button>
+ <button type="button" id="blackInk">Black Ink</button>
+ <p>Font Size</p>
+ <select autocomplete="off">
+ 	<option id ='font1'>10</option>
+ 	<option id ='font2'>20</option>
+ 	<option id ='font3'>30</option>
+ 	<option id ='font4'>40</option>
+ </select>
+ <canvas id="draw" width="800" height="800"></canvas>
+
+ <script>
+ const canvas = document.querySelector('#draw');
+ const ctx = canvas.getContext('2d');
+ canvas.width = window.innerWidth;
+ canvas.height = window.innerHeight;
+ var inkColor = 'black';
+ ctx.strokeStyle = '#BADA55';
+ ctx.lineJoin = 'round';
+ ctx.lineCap = 'round';
+ ctx.lineWidth = 10;
+ //ctx.globalCompositeOperation = 'multiply'; //Blends colors
+
+ let isDrawing = false; //Only draws when cursor is clicked down
+ let isErasing = false;
+ let lastX = 0;
+ let lastY = 0;
+ let direction = true;
+
+ function draw(e) {
+ 	if(!isDrawing) return; //Stop the function from running when they are not moused down.
+ 	console.log(e);
+ 	ctx.strokeStyle = inkColor;
+ 	ctx.beginPath();
+ 	if(isErasing == true){
+ 		ctx.globalCompositeOperation = 'destination-out';
+ 	} else {
+ 		ctx.globalCompositeOperation = 'source-over';
+ 	}
+ 	// Start from
+ 	ctx.moveTo(lastX, lastY);
+ 	// Go to
+ 	ctx.lineTo(e.offsetX, e.offsetY);
+ 	ctx.stroke();
+ 	[lastX, lastY] = [e.offsetX, e.offsetY];
+ }
+
+ canvas.addEventListener('mousedown', (e) => {
+ 	isDrawing = true;
+ 	[lastX, lastY] = [e.offsetX, e.offsetY];
+ });
+
+ canvas.addEventListener('mousemove', draw);
+ canvas.addEventListener('mouseup', () => isDrawing = false);
+ canvas.addEventListener('mouseout', () => isDrawing = false);
+ document.getElementById('redInk').addEventListener('click', () => {
+ 	inkColor = 'red'
+ 	isErasing = false;
+ });
+ document.getElementById('blackInk').addEventListener('click', () => {
+ 	inkColor = 'black'
+ 	isErasing = false;
+ });
+ document.getElementById('eraser').addEventListener('click', () => isErasing = true);
+ document.getElementById('font1').addEventListener('click', () => ctx.lineWidth = 10);
+ document.getElementById('font2').addEventListener('click', () => ctx.lineWidth = 20);
+ document.getElementById('font3').addEventListener('click', () => ctx.lineWidth = 30);
+ document.getElementById('font4').addEventListener('click', () => ctx.lineWidth = 40);
+
+ </script>
+
+ <style>
+ 	html, body {
+ 		margin: 0;
+ 	}
+
+ 	canvas {
+ 		background-image: url('https://i.pinimg.com/originals/3c/1e/42/3c1e429e1192e789d924351983c2fb57.jpg');
+ 		background-size: cover;
+    	background-repeat: no-repeat;
+ 	}
+
+ 	#eraser {
+ 		height: 100px;
+ 		width: 300px;
+ 		background-color: #ef536d;
+ 		border-radius: 25px;
+ 		font-size: 40px;
+ 	}
+
+ 	#redInk {
+ 		height: 100px;
+ 		width: 150px;
+ 		background-color: red;
+ 		border-radius: 100px;
+ 		font-size: 20px;
+ 	}
+
+ 	#blackInk {
+ 		height: 100px;
+ 		width: 150px;
+ 		background-color: black;
+ 		color: white;
+ 		border-radius: 100px;
+ 		font-size: 20px;
+ 	}
+
+ 	p {
+ 		font-size: 40px;
+ 		margin: 0;
+ 		display: inline-block;
+ 		margin-left: 10px;
+ 	}
+
+ 	select {
+ 		height: 50px;
+ 		width: 80px;
+ 		font-size: 30px;
+ 		margin-left: 10px;
+ 	}
+</style> 
+
+</body>
+</html>
+
